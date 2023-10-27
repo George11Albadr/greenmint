@@ -1,20 +1,17 @@
 document.addEventListener("DOMContentLoaded", function() {
 
-    // Agregar el evento click al botón
     const loadMealsButton = document.getElementById("loadMealsButton");
     loadMealsButton.addEventListener("click", loadMeals);
 
     function loadMeals() {
         const resultsContainer = document.getElementById('meal-results');
 
-        // Configuración de la API
-        const apiUrl = "https://themealdb.p.rapidapi.com/filter.php";
+        const apiUrl = "https://themealdb.p.rapidapi.com/latest.php"; // Cambiado a la URL de ejemplo que diste
         const headers = {
             "X-RapidAPI-Key": "5b3cf7f271mshb9dda7e5179c4f6p12f7c6jsn75247d38fbfc",
             "X-RapidAPI-Host": "themealdb.p.rapidapi.com"
         };
 
-        // Realizar la llamada a la API usando fetch
         fetch(apiUrl, {
             method: "GET",
             headers: headers
@@ -36,5 +33,4 @@ document.addEventListener("DOMContentLoaded", function() {
                 resultsContainer.innerHTML = '<p>Ocurrió un error al cargar las comidas</p>';
             });
     }
-
 });
