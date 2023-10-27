@@ -1,0 +1,18 @@
+/* Estilo general para el componente */
+div {
+    color: white; /* Letra blanca */
+}
+
+/* Estilo para la imagen */
+img {
+    width: 100px;  /* Establece el ancho de la imagen */
+    height: auto;  /* Mantiene la relación de aspecto de la imagen */
+    display: block;
+    margin: 20px auto; /* Centra la imagen y añade un margen superior e inferior */
+}
+
+/* Estilo para el input y el botón */
+input, button {
+    margin: 5px 0; /* Añade un margen superior e inferior */
+    padding: 5px 10px; /* Añade padding para que sea más cómodo */
+}
