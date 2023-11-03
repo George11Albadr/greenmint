@@ -1,80 +1,27 @@
-import {useEffect, useState} from 'react';
-import SearchIcon from './search.svg';
-import MovieCard from './MovieCard';
+// App.js
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Header from './components/Header';
+import Menu from './components/Menu';  // Asegúrate de tener este import
+import Search from './components/Search';
+import Meal from './components/Meal';
 import './App.css';
 
-// b0f0728c
+function App() {
+    return (
+        <Router>
+            <div>
+                <Header />
+                <Routes>
+                    <Route path="/" element={<></>}/>
+                    <Route path="/menu" element={<Menu />} />
+                    <Route path="/search" element={<Search />} />
+                    <Route path="/meal" element={<Meal />} />
 
-const API_URL = 'http://www.omdbapi.com?apikey=b0f0728c';
-const App = () => {
-    const [movies, SetMovies] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-
-    const searchMovies = async (title) => {
-        const response = await fetch(`${API_URL}&s=${title}`)
-        const data = await response.json();
-
-        SetMovies(data.Search);
-    };
-
-    useEffect(() => {
-        searchMovies('Any');
-    }, []);
-
-    if (movies?.length > 0) {
-        return (
-            <div className={'app'}>
-                <h1>PopcornTime</h1>
-
-                <div className={'search'}>
-                    <input
-                        placeholder={'Look out for movies...'}
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                    <img
-                        src={SearchIcon}
-                        alt='search'
-                        onClick={() => searchMovies(searchTerm)}
-                    />
-                </div>
-                {
-                    <div className={'container'}>
-                        {movies.map((movie) => (
-                            <MovieCard movie={movie}/>
-                        ))}
-                    </div>
-                }
+                </Routes>
             </div>
-        );
-    } else {
-        return (
-            <div className={'app'}>
-                <h1>PopcornTime</h1>
-
-                <div className={'search'}>
-                    <input
-                        placeholder={'Look out for movies...'}
-                        value={'Any'}
-                        onChange={() => {
-                        }}
-                    />
-                    <img
-                        src={SearchIcon}
-                        alt='search'
-                        onClick={() => {
-                        }}
-                    />
-                </div>
-
-                {
-                    <div className={'empty'}>
-                        <h2>No Movies Found</h2>
-                    </div>
-                }
-            </div>
-        );
-    }
+        </Router>
+    );
 }
 
 export default App;
