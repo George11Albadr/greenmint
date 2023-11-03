@@ -1,11 +1,11 @@
-// App.js
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
-import LoginForm from './components/LoginForm'; // Asegúrate de tener este componente
+import LoginForm from './components/LoginForm';
 import Menu from './components/Menu';
 import Search from './components/Search';
 import Meal from './components/Meal';
+import RouteWrapper from './components/RouteWrapper'; // Asegúrate de importar RouteWrapper
 import './App.css';
 
 function App() {
@@ -25,19 +25,21 @@ function App() {
         <Router>
             <div>
                 <Header
-                    onLoginClick={() => setShowLoginForm(true)}
+                    onLoginClick={() => setShowLoginForm(!showLoginForm)}
                     isAuthenticated={isAuthenticated}
                     onLogout={handleLogout}
                 />
                 {showLoginForm && !isAuthenticated && (
                     <LoginForm onLogin={handleLogin} onClose={() => setShowLoginForm(false)} />
                 )}
-                <Routes>
-                    <Route path="/" element={<></>} />
-                    <Route path="/menu" element={<Menu />} />
-                    <Route path="/search" element={<Search />} />
-                    <Route path="/meal" element={<Meal />} />
-                </Routes>
+                <RouteWrapper showLoginForm={showLoginForm} setShowLoginForm={setShowLoginForm}>
+                    <Routes>
+                        <Route path="/" element={<></>} />
+                        <Route path="/menu" element={<Menu />} />
+                        <Route path="/search" element={<Search />} />
+                        <Route path="/meal" element={<Meal />} />
+                    </Routes>
+                </RouteWrapper>
             </div>
         </Router>
     );
