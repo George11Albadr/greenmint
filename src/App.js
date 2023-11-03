@@ -5,6 +5,7 @@ import Header from './components/Header';
 import Menu from './components/Menu';  // Asegúrate de tener este import
 import Search from './components/Search';
 import Meal from './components/Meal';
+import Home from './components/Home'
 import './App.css';
 
 function App() {
@@ -13,7 +14,7 @@ function App() {
             <div>
                 <Header />
                 <Routes>
-                    <Route path="/" element={<></>}/>
+                    <Route path="/home" element={<Home />} />
                     <Route path="/menu" element={<Menu />} />
                     <Route path="/search" element={<Search />} />
                     <Route path="/meal" element={<Meal />} />

@@ -6,7 +6,7 @@ function Header() {
         <header>
             <h2 className="logo">Greenmint</h2>
             <nav className="navigation">
-                <Link to="/">Home</Link>
+                <Link to="/home">Home</Link>
                 <Link to="#">About Us</Link>
                 <Link to="/menu">Menus</Link>
                 <Link to="/search">Search</Link>
