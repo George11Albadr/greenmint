@@ -1,20 +1,46 @@
+// LoginForm.js
 import React, { useState } from 'react';
-import './LoginForm.css'; // Asegúrate de tener este archivo en el mismo directorio.
+import axios from 'axios';
+import './LoginForm.css';
 
 const LoginForm = ({ onLogin }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        if (email && password) {
-            onLogin(true);
-        }
-    };
+        setLoading(true);
+        setErrorMessage('');
 
-    // Función para añadir la clase 'has-content' cuando el input tiene contenido
-    const inputClassName = (value) => {
-        return value ? 'has-content' : '';
+        const options = {
+            method: 'POST',
+            url: 'http://localhost:3001/api/login',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            data: {
+                email: email,
+                password: password
+            }
+        };
+
+        try {
+            const response = await axios.request(options);
+            console.log('API Response:', response.data);
+            onLogin(true);
+        } catch (error) {
+            console.error('API Call Failed:', error);
+            if (error.response) {
+                // Si el servidor devuelve un mensaje de error
+                console.error('Login Error:', error.response.data.message);
+                setErrorMessage(error.response.data.message);
+            }
+            onLogin(false);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -29,7 +55,6 @@ const LoginForm = ({ onLogin }) => {
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className={inputClassName(email)}
                         />
                         <label>Email</label>
                     </div>
@@ -40,15 +65,13 @@ const LoginForm = ({ onLogin }) => {
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className={inputClassName(password)}
                         />
                         <label>Password</label>
                     </div>
-                    <div className="remember-forgot">
-                        <label><input type="checkbox" /> Remember me</label>
-                        <a href="#" className="forgot">Forgot Password?</a>
-                    </div>
-                    <button type="submit" className="btn">Login</button>
+                    {errorMessage && <div className="error-message">{errorMessage}</div>}
+                    <button type="submit" className="btn" disabled={loading}>
+                        {loading ? 'Logging in...' : 'Login'}
+                    </button>
                 </form>
             </div>
         </div>
