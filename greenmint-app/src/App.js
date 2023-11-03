@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import LoginForm from './components/LoginForm';
 import Menu from './components/Menu';
 import Search from './components/Search';
 import Meal from './components/Meal';
-import RouteWrapper from './components/RouteWrapper'; // Asegúrate de importar RouteWrapper
 import './App.css';
 
 function App() {
@@ -21,6 +20,19 @@ function App() {
         setIsAuthenticated(false);
     };
 
+    useEffect(() => {
+        const closeLoginForm = (e) => {
+            if (showLoginForm && e.target.className === 'form-backdrop') {
+                setShowLoginForm(false);
+            }
+        };
+
+        document.addEventListener('mousedown', closeLoginForm);
+        return () => {
+            document.removeEventListener('mousedown', closeLoginForm);
+        };
+    }, [showLoginForm]);
+
     return (
         <Router>
             <div>
@@ -30,16 +42,16 @@ function App() {
                     onLogout={handleLogout}
                 />
                 {showLoginForm && !isAuthenticated && (
-                    <LoginForm onLogin={handleLogin} onClose={() => setShowLoginForm(false)} />
+                    <div className="form-backdrop">
+                        <LoginForm onLogin={handleLogin} />
+                    </div>
                 )}
-                <RouteWrapper showLoginForm={showLoginForm} setShowLoginForm={setShowLoginForm}>
-                    <Routes>
-                        <Route path="/" element={<></>} />
-                        <Route path="/menu" element={<Menu />} />
-                        <Route path="/search" element={<Search />} />
-                        <Route path="/meal" element={<Meal />} />
-                    </Routes>
-                </RouteWrapper>
+                <Routes>
+                    <Route path="/" element={<></>} />
+                    <Route path="/menu" element={<Menu />} />
+                    <Route path="/search" element={<Search />} />
+                    <Route path="/meal" element={<Meal />} />
+                </Routes>
             </div>
         </Router>
     );
