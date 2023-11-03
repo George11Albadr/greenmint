@@ -1,6 +1,7 @@
 // Header.js
 import React from 'react';
 import { Link } from 'react-router-dom';
+import './Header.css'; // Asegúrate de tener un archivo CSS con los estilos necesarios.
 
 function Header({ onLoginClick, isAuthenticated, onLogout }) {
     return (
