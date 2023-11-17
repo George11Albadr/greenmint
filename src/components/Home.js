@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './Home.css';
 
 function Home() {
     const [nutritionData, setNutritionData] = useState([]);
@@ -20,16 +21,21 @@ function Home() {
                 }
             });
             console.log('Nutrition Data:', response.data);
-            setNutritionData(response.data.hints);
+            setNutritionData(response.data.hints.slice(0, 10));
         } catch (error) {
             console.error("Error fetching nutrition data", error);
         }
     };
 
+
+
     return (
         <div>
-            <h2>Nutrición</h2>
-            <button onClick={fetchNutritionData}>Obtener Datos de Nutrición</button>
+            <h1>Nutrición</h1>
+            <div className='search-container'>
+                {/* Remove the input field for search term */}
+                <button onClick={fetchNutritionData}>Buscar</button>
+            </div>
             <div id="nutrition-data-container">
                 {nutritionData.length > 0 && (
                     <div>
@@ -40,7 +46,9 @@ function Home() {
                                     <p>Categoría: {data.food.category}</p>
                                     <img src={data.food.image} alt={data.food.label} />
                                     <p>Label: {data.food.label}</p>
-                                    <p>Nutrientes: ENERC_KCAL: {data.food.nutrients.ENERC_KCAL}, PROCNT: {data.food.nutrients.PROCNT}, FAT: {data.food.nutrients.FAT}, CHOCDF: {data.food.nutrients.CHOCDF}, FIBTG: {data.food.nutrients.FIBTG}</p>
+                                    <p>Nutrientes: ENERC_KCAL: {data.food.nutrients.ENERC_KCAL},
+                                        PROCNT: {data.food.nutrients.PROCNT}, FAT: {data.food.nutrients.FAT},
+                                        CHOCDF: {data.food.nutrients.CHOCDF}, FIBTG: {data.food.nutrients.FIBTG}</p>
                                 </li>
                             ))}
                         </ul>
