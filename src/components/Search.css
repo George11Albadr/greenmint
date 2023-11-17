@@ -1,0 +1,27 @@
+/* Search.css */
+
+
+.meal-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.meal-container img {
+    margin-left: 15px;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.meal-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.meal-id {
+    font-size: 0.9em;
+    color: #666;
+}
