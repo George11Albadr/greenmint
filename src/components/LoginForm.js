@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './LoginForm.css';
 
-const LoginForm = ({ onLogin }) => {
+const LoginForm = ({ onLogin, onSwitchToRegister }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -61,6 +61,9 @@ const LoginForm = ({ onLogin }) => {
                         {loading ? 'Ingresando...' : 'Ingresar'}
                     </button>
                 </form>
+                <button onClick={onSwitchToRegister} className="btn switch-button">
+                    Sign Up
+                </button>
             </div>
         </div>
     );
