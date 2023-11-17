@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
+import Home from './components/Home';
 import Menu from './components/Menu';
 import Search from './components/Search';
 import Meal from './components/Meal';
@@ -71,6 +72,8 @@ function App() {
                     <Route path="/search" element={<Search />} />
                     <Route path="/meal" element={<Meal />} />
                     <Route path= "/userinfo" element={<UserInfo />} />
+
+                    <Route path="/home" element={<Home />} />
                 </Routes>
             </div>
         </Router>
