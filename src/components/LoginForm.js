@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './LoginForm.css';
 
-const LoginForm = ({ onLogin, onSwitchToRegister }) => {
+const LoginForm = ({ onLogin }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -14,28 +14,16 @@ const LoginForm = ({ onLogin, onSwitchToRegister }) => {
         setLoading(true);
         setErrorMessage('');
 
-        const options = {
-            method: 'POST',
-            url: 'http://localhost:3001/api/login',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            data: {
-                email: email,
-                password: password
-            }
-        };
-
         try {
-            const response = await axios.request(options);
-            console.log('API Response:', response.data);
+            const response = await axios.post('http://localhost:3001/api/login', { email, password });
+            localStorage.setItem('userToken', response.data.token);
             onLogin(true);
         } catch (error) {
-            console.error('API Call Failed:', error);
             if (error.response) {
                 // Si el servidor devuelve un mensaje de error
-                console.error('Login Error:', error.response.data.message);
-                setErrorMessage(error.response.data.message);
+                setErrorMessage(error.response.data);
+            } else {
+                setErrorMessage('Error al conectar con el servidor');
             }
             onLogin(false);
         } finally {
@@ -70,10 +58,7 @@ const LoginForm = ({ onLogin, onSwitchToRegister }) => {
                     </div>
                     {errorMessage && <div className="error-message">{errorMessage}</div>}
                     <button type="submit" className="btn" disabled={loading}>
-                        {loading ? 'Logging in...' : 'Login'}
-                    </button>
-                    <button type="button" className="btn" onClick={onSwitchToRegister}>
-                        Sign Up
+                        {loading ? 'Ingresando...' : 'Ingresar'}
                     </button>
                 </form>
             </div>

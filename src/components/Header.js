@@ -13,6 +13,7 @@ function Header({ onLoginClick, isAuthenticated, onLogout }) {
                 <Link to="/menu">Menus</Link>
                 <Link to="/search">Search</Link>
                 <Link to="/meal">Meal</Link>
+                <Link to="/UserInfo">My User</Link>
                 {isAuthenticated ? (
                     <button onClick={onLogout} className="btnLogin-popup">Logout</button>
                 ) : (

@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const admin = require('firebase-admin');
+const jwt = require('jsonwebtoken');
 
 // Inicializa Firebase Admin con tus credenciales
 const serviceAccount = require('./greenmint-firebase-adminsdk.json');
@@ -11,10 +12,11 @@ admin.initializeApp({
 });
 
 const db = admin.firestore();
-
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+
+const SECRET_KEY = 'tu_clave_secreta'; // Cambia esto por una clave secreta fuerte
 
 // Ruta para registrar un nuevo usuario
 app.post('/api/register', async (req, res) => {
@@ -31,40 +33,45 @@ app.post('/api/register', async (req, res) => {
 
 // Ruta para el login de usuario
 app.post('/api/login', async (req, res) => {
+    const { email, password } = req.body;
+    const usersRef = db.collection('users');
+    const snapshot = await usersRef.where('email', '==', email).get();
+
+    if (snapshot.empty) {
+        return res.status(401).send('Usuario no encontrado');
+    }
+
+    const user = snapshot.docs[0].data();
+    if (user.password === password) {
+        // Genera un token
+        const token = jwt.sign({ userId: user.id }, SECRET_KEY, { expiresIn: '1h' });
+        res.json({ token });
+    } else {
+        res.status(401).send('Contraseña incorrecta');
+    }
+});
+
+// Ruta para obtener la información del usuario logueado
+app.get('/api/userinfo', async (req, res) => {
     try {
-        const { email, password } = req.body;
-        const usersRef = db.collection('users');
-        const snapshot = await usersRef.where('email', '==', email).get();
+        const token = req.headers.authorization.split(' ')[1];
+        const decoded = jwt.verify(token, SECRET_KEY);
+        const userId = decoded.userId;
 
-        if (snapshot.empty) {
-            return res.status(401).send('Usuario no encontrado');
+        const userRef = db.collection('users').doc(userId);
+        const doc = await userRef.get();
+        if (!doc.exists) {
+            return res.status(404).send('Usuario no encontrado');
         }
 
-        const user = snapshot.docs[0].data();
-        if (user.password === password) {
-            // Considera implementar una forma más segura de manejar las contraseñas
-            res.status(200).send('Inicio de sesión exitoso');
-        } else {
-            res.status(401).send('Contraseña incorrecta');
-        }
+        res.json(doc.data());
     } catch (error) {
-        console.error('Error al intentar iniciar sesión:', error);
+        console.error('Error al obtener información del usuario:', error);
         res.status(500).send('Error en el servidor');
     }
 });
 
-// Ruta para obtener todos los usuarios
-app.get('/api/users', async (req, res) => {
-    try {
-        const usersRef = db.collection('users');
-        const snapshot = await usersRef.get();
-        const users = snapshot.docs.map(doc => doc.data());
-        res.json(users);
-    } catch (error) {
-        console.error('Error al obtener usuarios:', error);
-        res.status(500).send('Error en el servidor');
-    }
-});
+// ... (resto de tus rutas)
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

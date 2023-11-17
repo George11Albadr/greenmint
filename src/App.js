@@ -6,6 +6,7 @@ import RegisterForm from './components/RegisterForm';
 import Menu from './components/Menu';
 import Search from './components/Search';
 import Meal from './components/Meal';
+import UserInfo from './components/UserInfo';
 import './App.css';
 
 function App() {
@@ -69,6 +70,7 @@ function App() {
                     <Route path="/menu" element={<Menu />} />
                     <Route path="/search" element={<Search />} />
                     <Route path="/meal" element={<Meal />} />
+                    <Route path= "/userinfo" element={<UserInfo />} />
                 </Routes>
             </div>
         </Router>
