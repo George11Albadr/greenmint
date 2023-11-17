@@ -72,6 +72,7 @@ function App() {
                     <Route path="/search" element={<Search />} />
                     <Route path="/meal" element={<Meal />} />
                     <Route path= "/userinfo" element={<UserInfo />} />
+
                     <Route path="/home" element={<Home />} />
                 </Routes>
             </div>
