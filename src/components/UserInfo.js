@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './UserInfo.css';
 
 const UserInfo = () => {
     const [userInfo, setUserInfo] = useState(null);
@@ -26,12 +27,12 @@ const UserInfo = () => {
     }, []);
 
     return (
-        <div>
+        <div className="userInfo-container">
             {userInfo ? (
                 <div>
-                    <h3>Información del Usuario:</h3>
-                    <p>Nombre: {userInfo.name}</p>
-                    {/* Renderizar otros datos del usuario aquí */}
+                    <h3>Información del Usuario</h3>
+                    <p className="userInfo-detail"><label>Nombre:</label> {userInfo.username}</p>
+                    <p className="userInfo-detail"><label>Correo:</label> {userInfo.email}</p>
                 </div>
             ) : (
                 <p>Cargando información del usuario...</p>

@@ -22,8 +22,8 @@ const SECRET_KEY = 'tu_clave_secreta'; // Cambia esto por una clave secreta fuer
 app.post('/api/register', async (req, res) => {
     try {
         const { username, email, password } = req.body;
-        const userRef = db.collection('users');
-        await userRef.add({ username, email, password });
+        const newUserRef = await db.collection('users').add({ username, email, password });
+        console.log("Nuevo usuario ID:", newUserRef.id); // ID del documento creado
         res.status(201).send('Usuario registrado con éxito');
     } catch (error) {
         console.error('Error al registrar usuario:', error);
@@ -41,10 +41,12 @@ app.post('/api/login', async (req, res) => {
         return res.status(401).send('Usuario no encontrado');
     }
 
-    const user = snapshot.docs[0].data();
+    const userDoc = snapshot.docs[0];
+    const user = userDoc.data();
+
     if (user.password === password) {
         // Genera un token
-        const token = jwt.sign({ userId: user.id }, SECRET_KEY, { expiresIn: '1h' });
+        const token = jwt.sign({ userId: userDoc.id }, SECRET_KEY, { expiresIn: '1h' });
         res.json({ token });
     } else {
         res.status(401).send('Contraseña incorrecta');
@@ -70,8 +72,6 @@ app.get('/api/userinfo', async (req, res) => {
         res.status(500).send('Error en el servidor');
     }
 });
-
-// ... (resto de tus rutas)
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
