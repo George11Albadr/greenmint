@@ -56,14 +56,12 @@ function App() {
                 />
                 {showLoginForm && !isAuthenticated && (
                     <div className="form-backdrop">
-                        <LoginForm onLogin={handleLogin} />
-                        <button onClick={showRegister}>Sign Up</button>
+                        <LoginForm onLogin={handleLogin} onSwitchToRegister={showRegister} />
                     </div>
                 )}
                 {showRegisterForm && !isAuthenticated && (
                     <div className="form-backdrop">
                         <RegisterForm onRegister={handleLogin} />
-                        <button onClick={showLogin}>Back to Login</button>
                     </div>
                 )}
                 <Routes>

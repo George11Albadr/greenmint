@@ -29,7 +29,31 @@ app.post('/api/register', async (req, res) => {
     }
 });
 
-// Ruta para obtener todos los usuarios (demostrativo, en un entorno real deberías tener cuidado con exponer esta información)
+// Ruta para el login de usuario
+app.post('/api/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const usersRef = db.collection('users');
+        const snapshot = await usersRef.where('email', '==', email).get();
+
+        if (snapshot.empty) {
+            return res.status(401).send('Usuario no encontrado');
+        }
+
+        const user = snapshot.docs[0].data();
+        if (user.password === password) {
+            // Considera implementar una forma más segura de manejar las contraseñas
+            res.status(200).send('Inicio de sesión exitoso');
+        } else {
+            res.status(401).send('Contraseña incorrecta');
+        }
+    } catch (error) {
+        console.error('Error al intentar iniciar sesión:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+// Ruta para obtener todos los usuarios
 app.get('/api/users', async (req, res) => {
     try {
         const usersRef = db.collection('users');
