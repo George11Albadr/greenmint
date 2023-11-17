@@ -49,6 +49,27 @@ function Meal() {
         }
     };
 
+    const handleLikeMeal = async () => {
+        const token = localStorage.getItem('userToken');
+        if (!token) {
+            console.error('Usuario no autenticado');
+            return;
+        }
+
+        try {
+            await axios.post('http://localhost:3001/api/addLikedMeal', {
+                mealId: mealDetails.idMeal
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            console.log('Comida agregada a favoritos:', mealDetails.idMeal);
+        } catch (error) {
+            console.error('Error al agregar comida a favoritos:', error);
+        }
+    };
+
     return (
         <div>
             <h2>Detalles de la Comida</h2>
@@ -64,6 +85,7 @@ function Meal() {
                     <img src={mealDetails.strMealThumb} alt={mealDetails.strMeal} />
                     <p>{translatedInstructions || mealDetails.strInstructions}</p>
                     <button onClick={translateInstructions}>Traducir</button>
+                    <button onClick={handleLikeMeal}>Like</button>
                 </div>
             )}
         </div>

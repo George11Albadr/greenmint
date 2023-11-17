@@ -85,6 +85,35 @@ app.post('/api/updateProfilePicture', async (req, res) => {
     }
 });
 
+// Ruta para agregar una comida a la lista de favoritos del usuario
+app.post('/api/addLikedMeal', async (req, res) => {
+    try {
+        const { mealId } = req.body;
+        const token = req.headers.authorization.split(' ')[1];
+        const decoded = jwt.verify(token, SECRET_KEY);
+        const userId = decoded.userId;
+
+        const userRef = db.collection('users').doc(userId);
+        const userDoc = await userRef.get();
+
+        if (!userDoc.exists) {
+            return res.status(404).send('Usuario no encontrado');
+        }
+
+        // Actualiza la lista de comidas favoritas del usuario
+        await userRef.update({
+            likedMeals: admin.firestore.FieldValue.arrayUnion(mealId)
+        });
+
+        res.send('Comida agregada a favoritos');
+    } catch (error) {
+        console.error('Error al agregar comida a favoritos:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en puerto ${PORT}`);
