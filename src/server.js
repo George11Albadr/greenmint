@@ -45,7 +45,6 @@ app.post('/api/login', async (req, res) => {
     const user = userDoc.data();
 
     if (user.password === password) {
-        // Genera un token
         const token = jwt.sign({ userId: userDoc.id }, SECRET_KEY, { expiresIn: '1h' });
         res.json({ token });
     } else {
@@ -69,6 +68,19 @@ app.get('/api/userinfo', async (req, res) => {
         res.json(doc.data());
     } catch (error) {
         console.error('Error al obtener información del usuario:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+// Ruta para actualizar la URL de la foto de perfil del usuario
+app.post('/api/updateProfilePicture', async (req, res) => {
+    try {
+        const { userId, profilePictureUrl } = req.body;
+        const userRef = db.collection('users').doc(userId);
+        await userRef.update({ profilePicture: profilePictureUrl });
+        res.send('Foto de perfil actualizada con éxito');
+    } catch (error) {
+        console.error('Error al actualizar la foto de perfil:', error);
         res.status(500).send('Error en el servidor');
     }
 });
