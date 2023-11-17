@@ -1,11 +1,11 @@
-// LoginForm.js
+// RegisterForm.js
 import React, { useState } from 'react';
 import axios from 'axios';
-import './LoginForm.css';
 
-const LoginForm = ({ onLogin, onSwitchToRegister }) => {
+const RegisterForm = ({ onRegister }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [username, setUsername] = useState('');
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -16,28 +16,28 @@ const LoginForm = ({ onLogin, onSwitchToRegister }) => {
 
         const options = {
             method: 'POST',
-            url: 'http://localhost:3001/api/login',
+            url: 'http://localhost:3001/api/register',
             headers: {
                 'Content-Type': 'application/json',
             },
             data: {
                 email: email,
-                password: password
+                password: password,
+                username: username
             }
         };
 
         try {
             const response = await axios.request(options);
             console.log('API Response:', response.data);
-            onLogin(true);
+            onRegister(true);
         } catch (error) {
             console.error('API Call Failed:', error);
             if (error.response) {
-                // Si el servidor devuelve un mensaje de error
-                console.error('Login Error:', error.response.data.message);
+                console.error('Register Error:', error.response.data.message);
                 setErrorMessage(error.response.data.message);
             }
-            onLogin(false);
+            onRegister(false);
         } finally {
             setLoading(false);
         }
@@ -45,9 +45,20 @@ const LoginForm = ({ onLogin, onSwitchToRegister }) => {
 
     return (
         <div className="wrapper">
-            <div className="form-box login">
-                <h2>Login</h2>
+            <div className="form-box">
+                <h2>Register</h2>
                 <form onSubmit={handleSubmit}>
+                    {/* Inputs for username, email, and password */}
+                    <div className="input-box">
+                        <input
+                            type="text"
+                            placeholder="Username"
+                            required
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
+                        <label>Username</label>
+                    </div>
                     <div className="input-box">
                         <input
                             type="email"
@@ -70,10 +81,7 @@ const LoginForm = ({ onLogin, onSwitchToRegister }) => {
                     </div>
                     {errorMessage && <div className="error-message">{errorMessage}</div>}
                     <button type="submit" className="btn" disabled={loading}>
-                        {loading ? 'Logging in...' : 'Login'}
-                    </button>
-                    <button type="button" className="btn" onClick={onSwitchToRegister}>
-                        Sign Up
+                        {loading ? 'Registering...' : 'Register'}
                     </button>
                 </form>
             </div>
@@ -81,4 +89,4 @@ const LoginForm = ({ onLogin, onSwitchToRegister }) => {
     );
 };
 
-export default LoginForm;
+export default RegisterForm;
