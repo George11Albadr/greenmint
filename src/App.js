@@ -1,80 +1,81 @@
-import {useEffect, useState} from 'react';
-import SearchIcon from './search.svg';
-import MovieCard from './MovieCard';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Header from './components/Header';
+import LoginForm from './components/LoginForm';
+import RegisterForm from './components/RegisterForm';
+import Menu from './components/Menu';
+import Search from './components/Search';
+import Meal from './components/Meal';
+import Home from './components/Home';
 import './App.css';
 
-// b0f0728c
+function App() {
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [showLoginForm, setShowLoginForm] = useState(false);
+    const [showRegisterForm, setShowRegisterForm] = useState(false);
 
-const API_URL = 'http://www.omdbapi.com?apikey=b0f0728c';
-const App = () => {
-    const [movies, SetMovies] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
+    const handleLogin = (status) => {
+        setIsAuthenticated(status);
+        setShowLoginForm(false);
+        setShowRegisterForm(false); // Asegúrate de ocultar el formulario de registro al iniciar sesión
+    };
 
-    const searchMovies = async (title) => {
-        const response = await fetch(`${API_URL}&s=${title}`)
-        const data = await response.json();
-
-        SetMovies(data.Search);
+    const handleLogout = () => {
+        setIsAuthenticated(false);
     };
 
     useEffect(() => {
-        searchMovies('Any');
-    }, []);
+        const closeLoginForm = (e) => {
+            if (showLoginForm && e.target.className === 'form-backdrop') {
+                setShowLoginForm(false);
+            }
+        };
 
-    if (movies?.length > 0) {
-        return (
-            <div className={'app'}>
-                <h1>PopcornTime</h1>
+        document.addEventListener('mousedown', closeLoginForm);
+        return () => {
+            document.removeEventListener('mousedown', closeLoginForm);
+        };
+    }, [showLoginForm]);
 
-                <div className={'search'}>
-                    <input
-                        placeholder={'Look out for movies...'}
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                    <img
-                        src={SearchIcon}
-                        alt='search'
-                        onClick={() => searchMovies(searchTerm)}
-                    />
-                </div>
-                {
-                    <div className={'container'}>
-                        {movies.map((movie) => (
-                            <MovieCard movie={movie}/>
-                        ))}
+    const showRegister = () => {
+        setShowLoginForm(false);
+        setShowRegisterForm(true);
+    };
+
+    const showLogin = () => {
+        setShowLoginForm(true);
+        setShowRegisterForm(false);
+    };
+
+    return (
+        <Router>
+            <div>
+                <Header
+                    onLoginClick={showLogin}
+                    isAuthenticated={isAuthenticated}
+                    onLogout={handleLogout}
+                />
+                {showLoginForm && !isAuthenticated && (
+                    <div className="form-backdrop">
+                        <LoginForm onLogin={handleLogin} />
+                        <button onClick={showRegister}>Sign Up</button>
                     </div>
-                }
-            </div>
-        );
-    } else {
-        return (
-            <div className={'app'}>
-                <h1>PopcornTime</h1>
-
-                <div className={'search'}>
-                    <input
-                        placeholder={'Look out for movies...'}
-                        value={'Any'}
-                        onChange={() => {
-                        }}
-                    />
-                    <img
-                        src={SearchIcon}
-                        alt='search'
-                        onClick={() => {
-                        }}
-                    />
-                </div>
-
-                {
-                    <div className={'empty'}>
-                        <h2>No Movies Found</h2>
+                )}
+                {showRegisterForm && !isAuthenticated && (
+                    <div className="form-backdrop">
+                        <RegisterForm onRegister={handleLogin} />
+                        <button onClick={showLogin}>Back to Login</button>
                     </div>
-                }
+                )}
+                <Routes>
+                    <Route path="/Home" element={<Home />} />
+                    <Route path="/menu" element={<Menu />} />
+                    <Route path="/search" element={<Search />} />
+                    <Route path="/meal" element={<Meal />} />
+                </Routes>
             </div>
-        );
-    }
+        </Router>
+    );
 }
 
 export default App;
